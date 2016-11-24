@@ -1,0 +1,414 @@
+﻿ private int  Analyze_Line    (string line    , string text, int Line_Number)
+        {
+            Queue words=new Queue();
+
+            string[] line_words = line.Split(trim, StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = 0; i < line_words.Length; i++)
+            {
+                if (!String.IsNullOrWhiteSpace(line_words[i]))
+                {
+                    char temp=line_words[i][line_words[i].Length-1];
+
+                    if (temp == '\n' | temp == '\r' | temp == ' ')
+                    {
+                        line_words[i] = line_words[i].Substring(0, line_words[i].Length - 1);
+
+                        if (!String.IsNullOrWhiteSpace(line_words[i]))
+                        {
+                            words.Enqueue(line_words[i]);
+                        }
+                    }
+                    else
+                    {
+                        words.Enqueue(line_words[i]);
+                    }
+                }
+            }
+
+            if (words.Count == 0)
+            {
+                return -1;
+            }
+
+            string first_word = ((string)words.Dequeue()).ToUpperInvariant();
+
+            if (first_word[first_word.Length - 1] == ':')
+            {
+                if (!Validate_Label(first_word , text))
+                {
+                    ListError.Add_Error(" : This label is used before " , Line_Number);
+                    return -1;
+                }
+                else
+                {
+                    if(!Labels.Contains(first_word.Substring(0, first_word.Length - 1)))
+                    {
+                        Labels.Add(first_word.Substring(0, first_word.Length - 1));
+                    }
+                }
+
+                if (words.Count == 0)
+                {
+                    ListError.Add_Error(" : Label can't point to empty location" , Line_Number);
+                    return -1;
+                }
+
+                first_word = ((string)words.Dequeue()).ToUpperInvariant();
+
+            }
+
+            if (first_word == ".ORG")
+            {
+                if      (words.Count == 0)
+                {
+                    ListError.Add_Error(" : Expected address after .org pseudo instruction " , Line_Number);
+                    return -1;
+                }
+                else if (words.Count > 1)
+                {
+                    ListError.Add_Error(" : Unrecognized word(s) after .org address " , Line_Number);
+                    return -1;
+                }
+                else
+                {
+                    int temp = Validate_Address((string)words.Dequeue() , Line_Number);
+
+                    if (temp == -1)
+                    {
+                        ListError.Add_Error(" : Unrecognized address after .org pseudo instruction " , Line_Number);
+                        return -1;
+                    }
+                    else
+                    {
+                        return temp;
+                    }
+                }
+            }
+
+            if (One_Byte_Instruction.Contains(first_word))
+            {
+                if ( words.Count != 0)
+                {
+
+                    ListError.Add_Error(" : Unexpected word after one byte instruction ( " + words.Dequeue() + " ) " , Line_Number);
+                    return -1;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else if (first_word == "PMOV")
+            {
+                if ( words.Count == 0)
+                {
+                    ListError.Add_Error(" : Expected register names after PMOV instruction " , Line_Number);
+                    return -1;
+                }
+                else if (!PMOVs.Contains(((string)words.Dequeue()).ToUpperInvariant()))
+                {
+                    ListError.Add_Error(" : Unrecognized register names after PMOV instruction ", Line_Number);
+                    return -1;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else if (first_word == "PMVI")
+            {
+                if ( words.Count == 0)
+                {
+                    ListError.Add_Error(" : Expected register name after PMOV instruction " , Line_Number);
+                    return -1;
+                }
+                else if (!PMVIs.Contains(((string)words.Dequeue()).ToUpperInvariant()))
+                {
+                    ListError.Add_Error(" : Unrecognized register name after PMVI instruction ", Line_Number);
+                    return -1;
+                }
+                else
+                {
+                    if ( words.Count == 0)
+                    {
+                        ListError.Add_Error(" : Expected data after register name " , Line_Number);
+                        return -1;
+                    }
+                    else if (!Validate_Data(((string)words.Dequeue()).ToUpperInvariant(), Line_Number))
+                    {
+                        ListError.Add_Error(" : Unrecognized data after PMVI instruction ", Line_Number);
+                        return -1;
+                    }
+                    else
+                    {
+                        return 2;
+                    }
+                }
+            }
+            else if (JUMPs.Contains(first_word))
+            {
+                if ( words.Count == 0)
+                {
+                    ListError.Add_Error(" : Expected label after jump instruction " , Line_Number);
+                    return -1;
+                }
+                else if (!Labels.Contains(((string)words.Peek()).ToUpperInvariant()))
+                {
+                    ListError.Add_Error(" : Undefined label ( " + words.Dequeue() + " ) " , Line_Number);
+                    return -1;
+                }
+                else
+                {
+                    return 2;
+                }
+            }
+            else
+            {
+                ListError.Add_Error(" : Unrecognized word ( " + first_word + " ) ", Line_Number);
+                return -1;
+            }
+        }
+
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		private void Check()
+        {
+            ListWarning.Items.Clear();
+
+            string text=text = new TextRange(this.CaretPosition.DocumentStart.GetInsertionPosition(LogicalDirection.Forward), this.CaretPosition.DocumentEnd.GetInsertionPosition(LogicalDirection.Backward)).Text;
+            string[] text_lines = text.Split(trim3, StringSplitOptions.RemoveEmptyEntries);
+
+            TextPointer nextStart = this.CaretPosition.GetLineStartPosition(1);
+            TextPointer lineEnd = (nextStart != null ? nextStart : this.CaretPosition.DocumentEnd).GetInsertionPosition(LogicalDirection.Backward);
+            TextRange   pre_current_line = new TextRange(this.CaretPosition.GetLineStartPosition(0), lineEnd);
+
+            string current_line = "";
+            int current_line_n = -1;
+
+            if (String.IsNullOrWhiteSpace(pre_current_line.Text))
+            {
+                TextPointer start = this.CaretPosition.GetLineStartPosition(-1);
+
+                if (start != null)
+                {
+                    pre_current_line = new TextRange(this.CaretPosition.GetLineStartPosition(-1), this.CaretPosition.GetLineStartPosition(0).GetInsertionPosition(LogicalDirection.Backward));
+                    current_line = pre_current_line.Text.Split(trim3, StringSplitOptions.RemoveEmptyEntries)[0];
+
+                    for (int i = 0; i < text_lines.Length; i++)
+                    {
+                        if (text_lines[i] == current_line)
+                        {
+                            current_line_n = i;
+                        }
+                    }
+
+                    if (current_line_n != text_lines.Length - 1)
+                    {
+                        ListError.Refresh(current_line_n + 1, text_lines.Length);
+                    }
+                    
+                    return;
+                }
+                else
+                {
+                    ListError.Refresh();
+                    return;
+                }
+            }
+            else
+            {
+                current_line = pre_current_line.Text.Split(trim3, StringSplitOptions.RemoveEmptyEntries)[0];
+            }
+
+            //---------------------------------->
+
+            for (int i = 0; i < text_lines.Length; i++)
+            {
+                if (text_lines[i] == current_line)
+                {
+                    current_line_n = i;
+                }
+            }
+
+            ListError.Refresh(current_line_n, text_lines.Length);
+
+            for (int i = current_line_n ; i < text_lines.Length; i++)//--> notice that start indice has changed
+            {
+                int indice = text_lines[i].IndexOf("//");
+                if (indice != -1)
+                {
+                    text_lines[i] = text_lines[i].Substring(0, indice);
+                }
+
+                foreach (string item in Labels)
+                {
+                    if (text_lines[i].IndexOf(item + ":") != -1)
+                    {
+                        available.Add(item);
+                    }
+                }
+            }
+
+            Labels = available;
+
+            //---------------------------------->
+
+            int temp = 0;
+            int Address = (UsedAddress[current_line_n] == -10) ? 0 : UsedAddress[current_line_n];
+            
+            for (int i = current_line_n ; i < text_lines.Length; i++)
+            {
+                if (String.IsNullOrWhiteSpace(text_lines[i]))
+                {
+                    UsedAddress[i] = -2;
+                    continue;
+                }
+
+                temp = Analyze_Line(text_lines[i], text, i + 1);
+
+                if (temp == -1)
+                {
+                    Address = -1;
+                    UsedAddress[i+1] = -1;
+                }
+                else if (temp < 3)
+                {
+                    if (Address != -1)
+                    {
+                        int temp2 = UsedAddress[i];
+                        UsedAddress[i] = -100;
+
+                        if (UsedAddress.Contains(Address))
+                        {
+                             ListWarning.Items.Add("Warning in Line " + (i + 1).ToString() + " : This memory address is used before ( First one will be assembled )");
+                        }
+
+                        UsedAddress[i] = temp2;
+                        Address += temp;
+                        UsedAddress[i + 1] = Address;
+                    }
+                    else
+                    {
+                        Address = -1;
+                        UsedAddress[i+1] = -1;
+                    }
+                }
+                else
+                {
+                    UsedAddress[i] = -2;
+                    Address = temp - 2000;
+                    UsedAddress[i + 1] = Address;
+                }
+            }
+
+            LineHelper.Refresh(UsedAddress, current_line_n);
+            EditNumber(text_lines.Length);
+            ListError.Refresh(Labels);
+        }
+
+		//////////////////////////////////////////////////////////////////
+
+
+		public void Refresh(ArrayList new_Labels)
+        {
+            ArrayList temp  = new ArrayList();
+            ArrayList temp2 = new ArrayList();
+
+            foreach (string item in new_Labels)
+            {
+                if(MissingLabels.Contains(item))
+                {
+                    temp.Add(item);
+                }
+            }
+
+            foreach(string item2 in this.Items)
+            {
+                foreach (string item in temp)
+                {
+                    if (item2.Contains(item))
+                    {
+                        temp2.Add(item2);
+                    }
+                }
+            }
+
+            foreach(string item3 in temp2)
+            {
+                this.Items.Remove(item3);
+
+            }
+        }
+
+
+		////////////////////////////////////////////////////////////////////
+
+		public void Refresh()
+        {
+            ArrayList temp = new ArrayList();
+
+            foreach (string item in this.Items)
+            {
+                if (item.Contains("Error in Line 1"))
+                {
+                    temp.Add(item);
+                }
+            }
+
+            foreach (string item in temp)
+            {
+                this.Items.Remove(item);
+            }
+
+        }
+
+		public void Add_Error(string word, int line_n)
+        {
+            Dispatcher.Invoke(new System.Action(() =>this.Items.Add("Error in Line " + line_n.ToString() + word)));
+            return;
+        }
+
+
+		***************************************************************************************************************
+
+		if (InChange)
+            {
+                state = !state;
+                TextRange edit_ = new TextRange(this.Document.ContentStart, this.Document.ContentEnd);
+                Dispatcher.Invoke(new System.Action(() => edit_.Text = ""));
+
+                string temp_address_ = "";
+
+                for (int i = 0; i < 4096; i++)
+                {
+                    if (address[i] == -10)
+                    {
+                        Dispatcher.Invoke(new System.Action(() => edit_.Text = temp_address_));
+
+                        for (int j = 0; j < i - 1; j++)
+                        {
+                            mein[j] = address[j];
+                        }
+
+                        InChange = false;
+
+                        return;
+                    }
+                    else if (address[i] == -1)
+                    {
+                        temp_address_ += ((i != 0) ? "\n" : "") + "---";
+                    }
+                    else if (address[i] == -2)
+                    {
+                        temp_address_ += ((i != 0) ? "\n" : "") + "-->";
+                    }
+                    else
+                    {
+                        temp_address_ += ((i != 0) ? "\n" : "") + address[i].ToString(state ? "X3" : "D4");
+                    }
+                }
+
+                return;
+            }

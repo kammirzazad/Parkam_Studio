@@ -1,0 +1,40 @@
+﻿//againhex: try
+        //    {
+        //         HEX = new StreamWriter(Directory.Substring(0, Directory.LastIndexOf('.')) + ".hex");
+        //    }
+        //    catch
+        //    {
+        //        MessageBoxResult res = MessageBox.Show("Unable to create .hex file \nDo you want to retry creating .hex file?", "Error", MessageBoxButton.YesNo);
+        //        if (res == MessageBoxResult.Yes)
+        //        {
+        //            goto againhex;
+        //        }
+        //    }
+
+        //againlst: try
+        //    {
+        //         LST = new StreamWriter(Directory.Substring(0, Directory.LastIndexOf('.')) + ".lst");
+        //    }
+        //    catch
+        //    {
+        //       MessageBoxResult res = MessageBox.Show("Unable to create .lst file\nDo you want to retry creating .lst file?" ,"Error" , MessageBoxButton.YesNo);
+        //       if (res == MessageBoxResult.Yes)
+        //       {
+        //           goto againlst;
+        //       }
+        //    }
+
+            
+            //Dispatcher.Invoke(new System.Action(() => Status.Text = "Inserting Assembly information"));
+
+            //DateTime now = DateTime.Now;
+            //string lange = CultureInfo.CurrentCulture.DateTimeFormat.LongDatePattern;
+
+            //LST.Write("--------------------------------------------------------------------" + "\n");
+            //LST.Write("  Parkam Assembler                                                  " + "\n");
+            //LST.Write("                                        created by Kamyar Mirzazad  " + "\n");
+            //LST.Write("--------------------------------------------------------------------" + "\n");
+            //LST.Write("  Assembling done at    " + now.ToString(lange) + "\n");
+            //LST.Write("--------------------------------------------------------------------" + "\n");
+            //LST.Write("  " + Format_LST("Line Number", 13) + Format_LST("Address", 9) + Format_LST("Opcode", 8) + "Original Code" + "\n");
+            //LST.Write("--------------------------------------------------------------------" + "\n");

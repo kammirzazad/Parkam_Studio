@@ -1,0 +1,189 @@
+﻿<Window x:Class="WpfApplication1.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:MyNamespace="clr-namespace:WpfApplication1"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=System"
+        Title="Parkam_Simulator" WindowState="Normal" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="767" SizeToContent="Height" Name="Simulator" ResizeMode="CanMinimize" WindowStyle="ThreeDBorderWindow" Width="1400" VerticalAlignment="Center" Closing="Simulator_Closing" xmlns:my="clr-namespace:Parkam_Studio">
+    <Window.Resources>
+        <ImageBrush x:Key="Play"  ImageSource="/WpfApplication1;component/Images/play.png"/>
+        <ImageBrush x:Key="Pause" ImageSource="/WpfApplication1;component/Images/pause.png"/>
+        <ImageBrush x:Key="Stop"  ImageSource="/WpfApplication1;component/Images/stop.png"/>
+    </Window.Resources>
+    <Canvas VerticalAlignment="Stretch" Width="1390" HorizontalAlignment="Center" ForceCursor="False" Height="800">
+        <Image HorizontalAlignment="Stretch" Name="Simulator_BackGround" Stretch="Uniform" VerticalAlignment="Top" Margin="0" Width="1390" Height="550" StretchDirection="Both" Source="/WpfApplication1;component/Images/Canvas_BackGround_November5.jpg" />
+        <Polygon
+            Points="360,117 360,152 387,134.5"
+            Stroke="Purple" 
+            StrokeThickness="2" Height="277" Name="A_Buffer" Fill="Pink" ToolTip="Tri State Buffer"></Polygon>
+        <Polygon
+            Points="360,390 360,356 387,372"
+            Stroke="Purple" 
+            StrokeThickness="2" Height="402" Name="ALU_Buffer" Width="399" Fill="Pink" ToolTip="Tri State Buffer"></Polygon>
+        <Polygon
+            Points="360,180 360,213 387,196"
+            Stroke="Purple" 
+            StrokeThickness="2" Height="327" Name="B_Buffer" Fill="Pink" ToolTip="Tri State Buffer"></Polygon>
+        <Polygon
+            Points="360,405 360,440 387,423"
+            Stroke="Purple" 
+            StrokeThickness="2" Height="496" Name="X_Buffer" Width="399" Fill="Pink" ToolTip="Tri State Buffer"></Polygon>
+        <Polygon
+            Points="360,497 360,465 387,480"
+            Stroke="Purple" 
+            StrokeThickness="2" Height="505" Name="Input_Buffer" Fill="Pink" ToolTip="Tri State Buffer"></Polygon>
+        <Polygon
+            Points="975,78 975,110 949,93"
+            Stroke="Purple" 
+            StrokeThickness="2" Height="469" Name="Data_Buffer" Fill="Pink" ToolTip="Tri State Buffer"></Polygon>
+        <Polygon
+            Points="949,199 949,168 975,183"
+            Stroke="Purple" 
+            StrokeThickness="2" Height="469" Name="Q_Buffer" Fill="LightGreen" ToolTip="Tri State Buffer"></Polygon>
+        <ProgressBar Margin="25,81,450,496" Name="Data_Bus" FlowDirection="RightToLeft" Height="17" Canvas.Left="30" Canvas.Top="4" Width="895" Foreground="Orange" Value="0" Background="LightGray" ToolTip="8 Bit Wide DataBus" />
+        <ProgressBar Margin="25,100,0,100" Name="In_Port_1" Orientation="Vertical" HorizontalAlignment="Left" Width="12" RenderTransformOrigin="0.5,0.5" Canvas.Left="30" Canvas.Top="1" Height="387" MaxHeight="Infinity" Foreground="Orange" Background="LightGray" ToolTip="8 Bit Wide DataBus" />
+        <ProgressBar Canvas.Left="66" Canvas.Top="129" Height="13" Name="A_Input_2" Width="67" Foreground="Orange" ToolTip="8 Bit Wide DataBus" />
+        <ProgressBar Canvas.Left="66" Canvas.Top="178" Foreground="Orange" Height="13" Name="B_Input_2" Width="27" Background="LightGray" ToolTip="8 Bit Wide DataBus" />
+        <ProgressBar Canvas.Left="117" Canvas.Top="192" Foreground="Orange" Height="13" Name="B_Input_3" Width="16" ToolTip="8 Bit Wide Register Input" />
+        <ProgressBar Canvas.Left="202" Canvas.Top="130" Height="13" Name="A_Output_1" Width="159" Foreground="Orange" Background="LightGray" Value="0" ToolTip="8 Bit Wide Register Output" />
+        <ProgressBar Canvas.Left="202" Canvas.Top="191" Foreground="Orange" Height="13" Name="B_Output_1" Width="157" Panel.ZIndex="1" Background="LightGray" Value="0" ToolTip="8 Bit Wide Register Output" />
+        <ProgressBar Canvas.Left="296" Canvas.Top="365" Foreground="Yellow" Height="13" Name="ALU_Output_2" Width="63" Background="LightGray" BorderBrush="LightGray" ToolTip="8 Bit Wide ALU Output" />
+        <ProgressBar Canvas.Left="202" Canvas.Top="417" Foreground="Yellow" Height="13" Name="X_Output_1" Width="157" Background="LightGray" ToolTip="8 Bit Wide Register Output" />
+        <ProgressBar Canvas.Left="66" Canvas.Top="417" Foreground="Orange" Height="13" Name="X_Input_2" Width="67" Background="LightGray" ToolTip="8 Bit Wide DataBus" />
+        <ProgressBar Canvas.Left="66" Canvas.Top="475" Foreground="Orange" Height="13" Name="In_Port_2" Width="67" Background="LightGray" ToolTip="8 Bit Wide DataBus" />
+        <ProgressBar Canvas.Left="294" Canvas.Top="475" Foreground="Yellow" Height="13" Name="Out_Port_1" Width="65" Background="LightGray" ToolTip="8 Bit Wide Register Output" />
+        <ProgressBar Canvas.Left="467" Canvas.Top="100" Height="20" Name="IR_Input" Width="20" Orientation="Vertical" Foreground="Orange" RenderTransformOrigin="0.5,0.5" Background="LightGray" Value="0" ToolTip="8 Bit Wide DataBus" />
+        <ProgressBar Canvas.Left="546" Canvas.Top="100" Height="20" Name="LTemp_Input" Orientation="Vertical" Width="20" SnapsToDevicePixels="False" Foreground="Orange" RenderTransformOrigin="0.5,0.5" Background="LightGray" ToolTip="8 Bit Wide DataBus" />
+        <ProgressBar Canvas.Left="882" Canvas.Top="100" Height="82" Width="12" Orientation="Vertical" RenderTransformOrigin="0.5,0.5" Foreground="Orange" Name="Data_Bus_WR_2" Background="LightGray" ToolTip="8 Bit Wide DataBus" />
+        <ProgressBar Canvas.Left="881" Canvas.Top="180" Height="12" Name="Data_Bus_WR_3" Width="69" Foreground="Orange" Panel.ZIndex="1" Background="LightGray" ToolTip="8 Bit Wide DataBus" />
+        <ProgressBar Canvas.Left="753" Canvas.Top="251" Height="18" Name="Address_Bus" Width="240" Foreground="Blue" Panel.ZIndex="1" Background="LightGray" ToolTip="12 Bit Wide AddressBus" />
+        <ProgressBar Canvas.Left="387" Canvas.Top="101" Height="386" Name="Out_Port_2" Width="12" Orientation="Vertical" Foreground="Orange" Background="LightGray" ToolTip="8 Bit Wide DataBus" />
+        <ToolBar Canvas.Left="0" Canvas.Top="582" Name="toolBar1" Width="1390" Background="Chartreuse" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" Height="144">
+            <Button Name="Previous" Width="64" Height="64" Margin="545,0,0,0" Click="Previous_Click" ToolTip="Go Back to Previous Tcycle">
+                <Button.Background>
+                    <ImageBrush ImageSource="/WpfApplication1;component/Images/previous%20track1.png" />
+                </Button.Background>
+            </Button>
+            <Button Name="Center" Height="128" Width="128" Margin="10,0" Click="Center_Click" ToolTip="Start Simulation">
+                <Button.Background>
+                    <ImageBrush ImageSource="/WpfApplication1;component/Images/play.png" />
+                </Button.Background>
+            </Button>
+            <Button Name="Next" Width="64" Height="64" Margin="0,0,510,0" Click="Next_Click" ToolTip="Go to Next Tcycle">
+                <Button.Background>
+                    <ImageBrush ImageSource="/WpfApplication1;component/Images/next%20track1.png" />
+                </Button.Background>
+            </Button>
+        </ToolBar>
+        <ProgressBar Canvas.Left="467" Canvas.Top="164" Height="164" Name="IR_Output" Width="20" Orientation="Vertical" Foreground="Chartreuse" RenderTransformOrigin="0.5,0.5" Background="LightGray" Value="0" ToolTip="8 Bit Wide IR Output" />
+        <ProgressBar Canvas.Left="496" Canvas.Top="164" Height="55" Name="HTemp_In_1" Width="10" Foreground="Chartreuse" RenderTransformOrigin="0.5,0.5" Orientation="Vertical" Background="LightGray" ToolTip="4 Bit Wide HTemp Input" />
+        <ProgressBar Canvas.Left="505" Canvas.Top="207" Height="12" Name="HTemp_In_2" Width="17" RenderTransformOrigin="0.5,0.5" Foreground="Chartreuse" Background="LightGray" ToolTip="4 Bit Wide HTemp Input" />
+        <ProgressBar Canvas.Left="469" Canvas.Top="381" Height="22" Name="Decoder_Output" Width="20" Orientation="Vertical" Foreground="Chartreuse" RenderTransformOrigin="0.5,0.5" Background="LightGray" Value="0" ToolTip="9 Bit Wide ID Output" />
+        <ProgressBar Canvas.Left="700" Canvas.Top="337" Height="25" Name="PC_Output" Width="18" Foreground="Blue" Background="LightGray" ToolTip="12 Bit Wide PC Output" />
+        <ProgressBar Canvas.Left="655" Canvas.Top="165" Height="24" Name="Temp_Output" Width="63" Foreground="Blue" Background="LightGray" Value="0" ToolTip="12 Bit Wide Temp Output" />
+        <ProgressBar Canvas.Left="592" Canvas.Top="136" Height="14" Name="LTemp_Output" Width="42" Foreground="Blue" Background="LightGray" ToolTip="8 Bit Wide LTemp Output" />
+        <ProgressBar Canvas.Left="591" Canvas.Top="209" Height="11" Name="HTemp_Output" Width="43" Foreground="Blue" Background="LightGray" ToolTip="4 Bit Wide HTemp Output" />
+        <ProgressBar Canvas.Left="657" Canvas.Top="188" Height="140" Name="PC_In" Width="17" Orientation="Vertical" RenderTransformOrigin="0.5,0.5" Foreground="Blue" Background="LightGray" ToolTip="12 Bit Wide PC Input" />
+        <TextBlock Canvas.Left="54" Canvas.Top="84" Height="17" Name="Data_Bus_Content" Text="10" Width="26" Foreground="Black" TextAlignment="Center" Panel.ZIndex="2" Margin="0" Padding="0" Background="{x:Null}" Visibility="Hidden"><TextBlock.TextEffects><TextEffect /></TextBlock.TextEffects></TextBlock>
+        <TextBlock Canvas.Left="49" Canvas.Top="101" Foreground="Black" Height="15" Name="Register_Input_Content" Padding="0" Panel.ZIndex="10" Text="10" TextAlignment="Center" Width="23" Background="{x:Null}" RenderTransformOrigin="0,0" Visibility="Hidden" FontSize="11"><TextBlock.TextEffects><TextEffect /></TextBlock.TextEffects></TextBlock>
+        <ProgressBar Canvas.Left="80" Canvas.Top="258" Height="13" Name="MUX_2" Width="141" Foreground="Orange" FlowDirection="RightToLeft" Background="LightGray" ToolTip="8 Bit Wide MUX Input" />
+        <ProgressBar Canvas.Left="221" Canvas.Top="140" Height="145" Name="MUX_1" Width="13" Orientation="Vertical" Background="LightGray" Value="0" RenderTransformOrigin="0.5,0.5" Foreground="Orange" ToolTip="8 Bit Wide Register Output" />
+        <ProgressBar Canvas.Left="73" Canvas.Top="218" Height="53" Name="MUX_3" Width="8" Orientation="Vertical" Foreground="Orange" Background="LightGray" ToolTip="8 Bit Wide MUX Input" />
+        <ProgressBar Canvas.Left="73" Canvas.Top="207" Height="13" Name="MUX_4" Width="20" Foreground="Orange" Background="LightGray" ToolTip="8 Bit Wide MUX Input" />
+        <ProgressBar Canvas.Left="592" Canvas.Top="419" Height="10" Name="RD_1" Width="341" Background="LightGray" Value="0" ToolTip="Read Signal" />
+        <ProgressBar Canvas.Left="923" Canvas.Top="125" Height="295" Name="RD_2" Width="10" Orientation="Vertical" Background="LightGray" ToolTip="Read Signal" />
+        <ProgressBar Canvas.Left="933" Canvas.Top="125" Height="10" Name="RD_3" Width="27" Background="LightGray" ToolTip="Read Signal" />
+        <ProgressBar Canvas.Left="592" Canvas.Top="434" Height="10" Name="WR" Width="430" Foreground="Purple" Background="LightGray" Value="0" ToolTip="Read &amp; Write Clock" />
+        <ProgressBar Canvas.Left="592" Canvas.Top="462" Height="10" Name="RW_clock" Width="448" Foreground="#FF16F2F2" Background="LightGray" ToolTip="Write Signal" />
+        <TextBlock Canvas.Left="134" Canvas.Top="145" Height="18" Name="A_Control" Text="clk_A" Width="66" TextAlignment="Center" Foreground="Violet" Background="Violet" Visibility="Visible" />
+        <TextBlock Canvas.Left="134" Canvas.Top="207" Foreground="Violet" Height="18" Name="B_Control" Text="clk_B" TextAlignment="Center" Width="66" Background="Violet" Visibility="Visible" />
+        <TextBlock Canvas.Left="134" Canvas.Top="434" Foreground="Violet" Height="18" Name="X_Control" Text="clk_X" TextAlignment="Center" Width="66" Background="Violet" Visibility="Visible" />
+        <TextBlock Canvas.Left="134" Canvas.Top="495" Foreground="Violet" Height="18" Name="Output_Control" Text="clk_output" TextAlignment="Center" Width="66" Background="Violet" Visibility="Visible" />
+        <TextBlock Canvas.Left="445" Canvas.Top="144" Foreground="Blue" Height="18" Name="IR_Control" Text="clk_IR" TextAlignment="Center" Width="66" Background="Blue" Visibility="Visible" />
+        <TextBlock Canvas.Left="524" Canvas.Top="144" Foreground="Blue" Height="18" Name="LTemp_Control" Text="clk_LTemp" TextAlignment="Center" Width="66" Background="Blue" Visibility="Visible" />
+        <TextBlock Canvas.Left="524" Canvas.Top="219" Height="18" Name="HTemp_Control" Text="clk_HTemp" TextAlignment="Center" Width="66" Background="Blue" Visibility="Visible" Foreground="Blue" />
+        <TextBlock Canvas.Left="547" Canvas.Top="355" Foreground="Green" Height="26" Name="Decoder_Control" Text="clk_ID" TextAlignment="Center" Width="44" Background="Green" Visibility="Visible" />
+        <TextBlock Canvas.Left="994" Canvas.Top="100" Foreground="Plum" Height="18" Name="Data_Control" Text="clk_rw" TextAlignment="Center" Width="68" Background="Plum" />
+        <TextBlock Canvas.Left="994" Canvas.Top="187" Foreground="Plum" Height="18" Name="Q_Control" Text="clk_rw" TextAlignment="Center" Width="66" Background="Plum" />
+        <TextBlock Canvas.Left="995" Canvas.Top="261" Foreground="Plum" Height="18" Name="Address_Control" Text="clk_rw" TextAlignment="Center" Width="66" Background="Plum" />
+        <TextBlock Canvas.Left="1023" Canvas.Top="439" Foreground="White" Height="15" Name="WR_Control" Text="" TextAlignment="Center" Width="37" Background="Plum" />
+        <TextBlock Canvas.Left="632" Canvas.Top="353" Foreground="Blue" Height="18" Name="PC_Control" Text="inc_PC" TextAlignment="Center" Width="66" Background="Blue" Visibility="Visible" />
+        <TextBlock Background="{x:Null}" Canvas.Left="381" Canvas.Top="470" Foreground="Black" Height="15" Name="Register_Output_Content" Padding="0" Panel.ZIndex="10" RenderTransformOrigin="0.5,0.5" Text="10" TextAlignment="Center" Visibility="Hidden" Width="23" FontSize="11"><TextBlock.TextEffects><TextEffect /></TextBlock.TextEffects></TextBlock>
+        <TextBlock Background="{x:Null}" Canvas.Left="754" Canvas.Top="252" Foreground="Black" Height="15" Name="Address_Bus_Content" Padding="0" Panel.ZIndex="1" RenderTransformOrigin="0,0" Text="10" TextAlignment="Center" Visibility="Hidden" Width="23"><TextBlock.TextEffects><TextEffect /></TextBlock.TextEffects></TextBlock>
+        <Ellipse Canvas.Left="720" Canvas.Top="167" Height="22" Name="MUX_Address_1" Stroke="Black" Width="21" Fill="Red" />
+        <Ellipse Canvas.Left="720" Canvas.Top="338" Height="22" Name="MUX_Address_0" Stroke="Black" Width="21" Fill="LightGreen" />
+        <Ellipse Canvas.Left="97" Canvas.Top="180" Height="15" Name="MUX_B_0" Stroke="Black" Width="15" Fill="LightGreen" />
+        <Ellipse Canvas.Left="97" Canvas.Top="206" Height="15" Name="MUX_B_1" Stroke="Black" Width="15" Fill="Red" />
+        <Button Canvas.Left="425" Canvas.Top="488" Content="Reset " Height="25" Name="Reset_Button" Width="165" Click="Reset_Click" />
+        <TextBlock Background="Orchid" Canvas.Left="424" Canvas.Top="302" Foreground="Orchid" Height="15" Name="Carry_Control" Text="clk_C" TextAlignment="Center" Width="34" Visibility="Visible" />
+        <TextBlock Background="Orchid" Canvas.Left="424" Canvas.Top="253" Foreground="Orchid" Height="15" Name="N_Control" Text="clk_N" TextAlignment="Center" Width="34" Visibility="Visible" />
+        <TextBlock Background="Orchid" Canvas.Left="424" Canvas.Top="205" Foreground="Orchid" Height="15" Name="Z_Control" Text="clk_Z" TextAlignment="Center" Width="34" Visibility="Visible" />
+        <TextBlock Background="LightGreen" Canvas.Left="422" Canvas.Top="207" Foreground="White" Height="15" Name="Z_rst" Text="rst" TextAlignment="Center" Width="35" Visibility="Hidden" />
+        <TextBlock Background="LightGreen" Canvas.Left="503" Canvas.Top="267" Foreground="White" Height="15" Name="N_rst" Text="rst" TextAlignment="Center" Width="35" Visibility="Hidden" />
+        <TextBlock Canvas.Left="252" Canvas.Top="321" Height="29" Name="ALU_Status" Text="Idle" Background="Violet" Foreground="White" RenderTransformOrigin="0.5,0.5" Width="71" TextAlignment="Center" MouseEnter="ALU_Status_MouseEnter" MouseLeave="ALU_Status_MouseLeave" FontSize="15" ToolTip="ALU Status" />
+        <ListBox Canvas.Left="1096" Canvas.Top="61" Height="405" Name="RAM" Width="230" Foreground="Blue" FontFamily="Courier New" FontSize="15" MouseDoubleClick="RAM_MouseDoubleClick" />
+        <ProgressBar Canvas.Left="387" Canvas.Top="101" Height="326" Name="X_Output_2" Width="12" Orientation="Vertical" Foreground="Orange" Panel.ZIndex="1" Visibility="Hidden" Background="LightGray" />
+        <ProgressBar Canvas.Left="387" Canvas.Top="102" Height="105" Name="B_Output_2" Width="12" Orientation="Vertical" Panel.ZIndex="2" Foreground="Orange" Visibility="Hidden" Background="LightGray" />
+        <ProgressBar Canvas.Left="387" Canvas.Top="101" Height="276" Name="ALU_Output_3" Width="12" Orientation="Vertical" Panel.ZIndex="3" Foreground="Orange" Visibility="Hidden" Background="LightGray" />
+        <ProgressBar Canvas.Left="387" Canvas.Top="102" Height="38" Name="A_Output_2" Width="12" Orientation="Vertical" Panel.ZIndex="4" Foreground="Orange" Visibility="Hidden" Background="LightGray" />
+        <ProgressBar Canvas.Left="55" Canvas.Top="84" Height="17" Name="Out_In" Width="344" Foreground="Orange" FlowDirection="RightToLeft" Panel.ZIndex="1" Visibility="Hidden" Background="LightGray" />
+        <ProgressBar Canvas.Left="368" Canvas.Top="74" Height="17" Name="Out_Memory" Width="535" Foreground="Orange" Visibility="Hidden" />
+        <TextBlock Canvas.Left="80" Canvas.Top="332" Height="23" Name="s0" Text="s0" TextAlignment="Center" Background="Red" Foreground="White" Width="15" />
+        <TextBlock Background="Red" Canvas.Left="101" Canvas.Top="332" Foreground="White" Height="23" Name="s1" Text="s1" TextAlignment="Center" Width="15" />
+        <TextBlock Background="Red" Canvas.Left="123" Canvas.Top="333" Foreground="White" Height="23" Name="s2" Text="s2" TextAlignment="Center" Width="15" />
+        <TextBlock Background="Red" Canvas.Left="144" Canvas.Top="332" Foreground="White" Height="23" Name="s3" Text="s3" TextAlignment="Center" Width="15" />
+        <TextBlock Background="Red" Canvas.Left="165" Canvas.Top="332" Foreground="White" Height="23" Name="s4" Text="s4" TextAlignment="Center" Width="15" />
+        <TextBlock Background="Red" Canvas.Left="80" Canvas.Top="360" Foreground="White" Height="23" Name="s6" Text="s6" TextAlignment="Center" Width="15" />
+        <TextBlock Background="Red" Canvas.Left="186" Canvas.Top="332" Foreground="White" Height="23" Name="s5" Text="s5" TextAlignment="Center" Width="15" />
+        <TextBlock Background="Red" Canvas.Left="101" Canvas.Top="360" Foreground="White" Height="23" Name="s7" Text="s7" TextAlignment="Center" Width="15" />
+        <TextBlock Background="Red" Canvas.Left="123" Canvas.Top="360" Foreground="White" Height="23" Name="s8" Text="s8" TextAlignment="Center" Width="15" />
+        <TextBlock Background="Red" Canvas.Left="144" Canvas.Top="360" Foreground="White" Height="23" Name="s9" Text="s9" TextAlignment="Center" Width="15" />
+        <TextBlock Background="Red" Canvas.Left="165" Canvas.Top="360" Foreground="White" Height="23" Name="s10" Text="s10" TextAlignment="Center" Width="20" />
+        <TextBlock Background="Red" Canvas.Left="191" Canvas.Top="360" Foreground="White" Height="23" Name="s11" Text="s11" TextAlignment="Center" Width="20" />
+        <ProgressBar Canvas.Left="284" Canvas.Top="355" Height="22" Name="ALU_Output_1" Width="13" Orientation="Vertical" Foreground="Yellow" Background="LightGray" ToolTip="8 Bit Wide ALU Output" />
+        <ProgressBar Canvas.Left="341" Canvas.Top="201" Height="83" Name="ALU_B" Width="13" Orientation="Vertical" Foreground="Orange" Background="LightGray" RenderTransformOrigin="0.5,0.5" ToolTip="8 Bit Wide Register Output" />
+        <TextBlock Canvas.Left="1023" Canvas.Top="415" FontSize="20" Foreground="Plum" Height="27" Name="WR_Register" Text="0" TextAlignment="Center" Width="37" ToolTip="Write Enable" />
+        <Rectangle Canvas.Left="73" Canvas.Top="320" Height="80" Name="signals" Stroke="White" Width="146" Stretch="Fill" Fill="White" Visibility="Visible" />
+        <ProgressBar Canvas.Left="55" Canvas.Top="101" Height="326" Name="X_Input_1" Width="12" Orientation="Vertical" Visibility="Hidden" Foreground="Orange" Panel.ZIndex="1" Background="LightGray" ToolTip="8 Bit Wide DataBus " RenderTransformOrigin="0.5,0.5" />
+        <ProgressBar Canvas.Left="55" Canvas.Top="101" Height="88" Name="B_Input_1" Width="12" Orientation="Vertical" Foreground="Orange" Panel.ZIndex="1" Visibility="Hidden" Background="LightGray" ToolTip="8 Bit Wide DataBus " RenderTransformOrigin="0.5,0.5" />
+        <ProgressBar Canvas.Left="55" Canvas.Top="101" Height="39" Name="A_Input_1" Width="12" Foreground="Orange" Orientation="Vertical" Background="LightGray" Panel.ZIndex="1" Visibility="Hidden" RenderTransformOrigin="0.5,0.5" ToolTip="8 Bit Wide DataBus "/>
+        <ProgressBar Canvas.Left="386" Canvas.Top="84" Height="17" Name="Data_Bus_WR_1" Width="508" Foreground="Orange" Panel.ZIndex="1" Background="LightGray" Visibility="Hidden" />
+        <TextBlock Background="Orchid" Canvas.Left="501" Canvas.Top="303" Foreground="Orchid" Height="15" Name="O_Control" Text="clk_ALU" TextAlignment="Center" Width="48" Visibility="Visible" />
+        <TextBlock Canvas.Left="423" Canvas.Top="404" Height="30" Name="CU_Status" Text="Ready..." Width="168" TextAlignment="Center" Foreground="Black" Background="Chartreuse" FontSize="15" Opacity="1" />
+        <TextBlock Canvas.Left="547" Canvas.Top="328" Height="27" Name="clk_enable" Text="clk_en" Width="44" TextAlignment="Center" Background="LightGreen" Foreground="Black" />
+        <ComboBox Canvas.Left="1194" Canvas.Top="618" Height="32" Name="Timing" Width="103" FontSize="18">
+            <ComboBoxItem Content="2000 ms" />
+            <ComboBoxItem Content="3000 ms" />
+            <ComboBoxItem Content="4000 ms" />
+            <ComboBoxItem Content="5000 ms" IsSelected="True" />
+            <ComboBoxItem Content="6000 ms" />
+            <ComboBoxItem Content="7000 ms" />
+            <ComboBoxItem Content="8000 ms" />
+            <ComboBoxItem Content="9000 ms" />
+            <ComboBoxItem Content="10000 ms" />
+        </ComboBox>
+        <ComboBox Canvas.Left="225" Canvas.Top="470" Height="46" Name="Input_Register" Width="72" IsEditable="False" ItemStringFormat="" Text="Inport" Foreground="Violet" HorizontalContentAlignment="Center" FontSize="25" VerticalContentAlignment="Center" ToolTip="Processor Input">
+            <ComboBoxItem Content="00" IsSelected="True" />
+        </ComboBox>
+        <my:DataRegister Canvas.Left="133" Canvas.Top="120" Height="26" x:Name="A_Register" Text="A_Register" Foreground="Violet" TextAlignment="Center" Width="70" UseLayoutRounding="False" ToolTip="A Register" />
+        <my:DataRegister Canvas.Left="133" Canvas.Top="182" Foreground="Violet" Height="26" x:Name="B_Register" Text="B_Register" TextAlignment="Center" Width="70" ToolTip="B Register" />
+        <my:DataRegister Canvas.Left="133" Canvas.Top="409" Foreground="Violet" Height="26" x:Name="X_Register" Text="X_Register" TextAlignment="Center" Width="70" ToolTip="X Register" />
+        <my:DataRegister Canvas.Left="133" Canvas.Top="470" Foreground="Violet" Height="26" x:Name="Output_Register" Text="Output" TextAlignment="Center" Width="70" ToolTip="Output Register" />
+        <my:DataRegister Canvas.Left="444" Canvas.Top="120" Foreground="Blue" Height="26" x:Name="IR_Register" Text="IR_Register" TextAlignment="Center" Width="70" ToolTip="Instruction Register" />
+        <my:DataRegister Canvas.Left="523" Canvas.Top="120" Foreground="Blue" Height="26" x:Name="LTemp_Register" Text="LTemp_Reg" TextAlignment="Center" Width="70" ToolTip="LTemp Register" />
+        <my:DataRegister Canvas.Left="993" Canvas.Top="75" Foreground="Plum" Height="26" x:Name="Data_Register" Text="Data_Reg" TextAlignment="Center" Width="70" ToolTip="Data Register" />
+        <my:DataRegister Canvas.Left="992" Canvas.Top="163" Foreground="Plum" Height="26" x:Name="Q_Register" Text="Q_Register" TextAlignment="Center" Width="70" ToolTip="Q Register" />
+        <my:AddressRegister Canvas.Left="993" Canvas.Top="237" Height="26" x:Name="Address_Register" Text="Address_Reg" Width="70" TextAlignment="Center" Foreground="Plum" ToolTip="Address Register" />
+        <my:ProgramCounter Canvas.Left="630" Canvas.Top="327" Height="27" x:Name="PC_Register" Text="PC" Width="70" TextAlignment="Center" Foreground="Blue" ToolTip="Program Counter" />
+        <my:HighTempRegister Canvas.Left="521" Canvas.Top="194" Height="26" x:Name="HTemp_Register" Text="HTemp_Reg" Width="70" TextAlignment="Center" Foreground="Blue" ToolTip="HTemp Register" />
+        <my:InformationText Canvas.Left="0" Canvas.Top="548" Height="36" x:Name="State" Text="No Instruction" Width="1390" Background="Blue" FontSize="20" Foreground="White" TextAlignment="Center" />
+        <my:G_Flag Canvas.Left="423" Canvas.Top="181" Height="28" x:Name="Z_Flag" Text="0" Width="35" TextAlignment="Center" Foreground="Orchid" FontSize="20" ToolTip="Zero Flag" />
+        <my:G_Flag Canvas.Left="424" Canvas.Top="229" FontSize="20" Foreground="Orchid" Height="28" x:Name="N_Flag" Text="0" TextAlignment="Center" Width="35" Uid="" ToolTip="Negative Flag" />
+        <my:Flag Canvas.Left="424" Canvas.Top="278" Height="28" x:Name="C_Flag" Text="0" TextAlignment="Center" Foreground="Orchid" FontSize="20" Width="35" Uid="" ToolTip="Carry Flag" />
+        <my:Flag Canvas.Left="500" Canvas.Top="279" Height="28" x:Name="O_Flag" Text="0" TextAlignment="Center" Width="50" Foreground="Orchid" FontSize="20" Uid="" ToolTip="Overflow Flag" />
+        <my:InsructionDecoder Canvas.Left="423" Canvas.Top="327" Height="54" x:Name="ID" Text="Ins_Decoder" Width="125" Foreground="Green" TextAlignment="Center" FontSize="18" />
+        <TextBlock Canvas.Left="252" Canvas.Top="607" Height="43" Name="CurrentIns" Text="--" Width="217" TextAlignment="Center" FontSize="20" Foreground="Black" />
+        <TextBlock Canvas.Left="45" Canvas.Top="607" Height="34" Name="textBlock2" Text="Current Instruction :" Width="176" Foreground="Black" FontSize="20" TextAlignment="Right" />
+        <TextBlock Canvas.Left="252" Canvas.Top="647" Height="39" Name="NextIns" Text="--" Width="217" TextAlignment="Center" Foreground="Black" FontSize="20" />
+        <TextBlock Canvas.Left="45" Canvas.Top="647" Height="39" Name="textBlock4" Text="Next Instruction :" Width="174" FontSize="20" Foreground="Black" TextAlignment="Right" />
+    </Canvas>
+</Window>

@@ -1,0 +1,150 @@
+﻿public  void Analyze_Text()
+        {
+            TextPointer Begin = null;
+            TextPointer End = null;
+            string temp = this.CaretPosition.GetTextInRun(LogicalDirection.Backward);
+            string temp2 = this.CaretPosition.GetTextInRun(LogicalDirection.Forward);
+            string temp_back = new TextRange(this.CaretPosition.GetLineStartPosition(0), this.CaretPosition).Text;//this.CaretPosition.GetTextInRun(LogicalDirection.Backward);
+            string back = "";
+
+            if (temp.Length > 1)
+            {
+                if (temp[temp.Length - 1] == ' ' & temp[temp.Length - 2] == ':')
+                {
+                    TextPointer _Begin = this.CaretPosition.GetPositionAtOffset(-(temp.Length), LogicalDirection.Backward);
+                    TextPointer _End = this.CaretPosition.GetPositionAtOffset(-1, LogicalDirection.Backward);
+                    TextRange _Label = new TextRange(_Begin, _End);
+                    _Label.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Violet);
+                }
+            }
+
+            /*if (!String.IsNullOrWhiteSpace(temp))//Middle insertion
+            {
+                if (temp[temp.Length - 1] == ' ')
+                {
+                    Begin = this.CaretPosition.GetPositionAtOffset(-(temp.Length), LogicalDirection.Backward);
+                    End   = this.CaretPosition.GetPositionAtOffset(-1, LogicalDirection.Backward);
+
+                    if (temp_back.LastIndexOf(' ') != -1)
+                    {
+                        temp_back = temp_back.Substring(temp_back.LastIndexOf(' '));
+                    }
+
+                    goto END;
+                }
+            }*/
+
+            //--------------------------------------------->Normal Operation
+
+            if (temp.LastIndexOf(' ') != -1) { temp = temp.Substring(temp.LastIndexOf(' ') + 1); }
+            if (temp2.IndexOf(' ') != -1) { temp2 = temp2.Substring(0, temp2.IndexOf(' ')); }
+            Begin = this.CaretPosition.GetPositionAtOffset(-(temp.Length), LogicalDirection.Backward);
+            End = this.CaretPosition.GetPositionAtOffset(+(temp2.Length), LogicalDirection.Forward);
+
+
+            back = "";
+
+            if (temp_back.LastIndexOf(' ') != -1)
+            {
+                back = temp_back.Substring(0, temp_back.LastIndexOf(' '));
+                back = back.Substring(back.LastIndexOf(' ') + 1);
+            }
+
+            back = back.ToUpperInvariant();
+
+            //------------------------------------------->
+
+            TextPointer LineEnd = (this.CaretPosition.GetLineStartPosition(1) != null ? this.CaretPosition.GetLineStartPosition(1) : this.CaretPosition.DocumentEnd).GetInsertionPosition(LogicalDirection.Backward);
+            TextRange Current_Word = new TextRange(Begin, End);
+            TextRange Whole_Line = new TextRange(this.CaretPosition.GetLineStartPosition(0).GetInsertionPosition(LogicalDirection.Forward), LineEnd);
+
+            int indice = Whole_Line.Text.IndexOf(";");
+
+            if (indice != -1 & Whole_Line.Text.IndexOf(Current_Word.Text) >= indice)
+            {
+                Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Green);
+                return;
+            }
+            else
+            {
+                string _Current_Word = Current_Word.Text.ToUpperInvariant();
+
+                if (String.IsNullOrWhiteSpace(back))//-1
+                {
+                    if (One_Byte_Instruction.Contains(_Current_Word) | JUMPs.Contains(_Current_Word) | _Current_Word == "PMOV" | _Current_Word == "PMVI" | _Current_Word == "LDA" | _Current_Word == "STA")
+                    {
+                        Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Blue);
+                    }
+                    else if (_Current_Word == ".ORG")
+                    {
+                        Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Violet);
+                    }
+                    else if (_Current_Word.IndexOf(':') == ((_Current_Word.Length == 0) ? -2 : _Current_Word.Length - 1))
+                    {
+                        Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Violet);
+                    }
+                    else
+                    {
+                        Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Black);
+                    }
+
+                    Refresh_AutoComplete(_Current_Word, -1);
+                    return;
+                }
+                else if (back == "A," | back == "X,")//7
+                {
+                    Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Chartreuse);
+                    return;
+                }
+                else if (back.Contains(".ORG"))//1
+                {
+                    Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Violet);
+                    return;
+                }
+                else if (back.Contains("PMOV"))//2
+                {
+                    Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Orange);
+                    Refresh_AutoComplete(_Current_Word, 2);
+                    return;
+                }
+                else if (back.Contains("PMVI"))//3
+                {
+                    Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Orange);
+                    Refresh_AutoComplete(_Current_Word, 3);
+                    return;
+                }
+                else if (back.Contains("STA") | back.Contains("LDA"))//4
+                {
+                    Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Orange);
+                    return;
+                }
+                else if (JUMPs.Contains(back.ToUpperInvariant()))//5
+                {
+                    Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Orange);
+                    Refresh_AutoComplete(_Current_Word, 5);
+                    return;
+                }
+                else if (back.Length != 0)//6
+                {
+                    if (back[back.Length - 1] == ':')
+                    {
+                        if (One_Byte_Instruction.Contains(Current_Word.Text.ToUpperInvariant()) | JUMPs.Contains(Current_Word.Text.ToUpperInvariant()) | Current_Word.Text.ToUpperInvariant() == "PMOV" | Current_Word.Text.ToUpperInvariant() == "PMVI")
+                        {
+                            Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Blue);
+                        }
+                        else
+                        {
+                            Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Black);
+                        }
+
+                        Refresh_AutoComplete(_Current_Word, -1);
+                        return;
+                    }
+                }
+
+                Current_Word.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Black);
+                return;
+            }
+
+            return;
+        }

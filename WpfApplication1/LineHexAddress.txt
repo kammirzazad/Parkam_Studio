@@ -1,0 +1,113 @@
+﻿public void Refresh(int[] address, int size)
+        {
+            if (this.Document.Blocks.Count == 0)
+            {
+                TextRange edit=null;
+
+                for (int i = 0; i < 4096; i++)
+                {
+                    mein[i] = 0;
+                }
+
+                Dispatcher.Invoke(new System.Action(() => edit = new TextRange(this.Document.ContentStart, this.Document.ContentEnd)));
+
+                string temp_address = "";
+
+                for (int i = 0 ; i < size ; i++)
+                {
+                    if (address[i] == -10)
+                    {
+                        mein[i] = address[i];
+                        Dispatcher.Invoke(new System.Action(() => edit.Text = temp_address));
+                        return;
+                    }
+                    else if (address[i] == -1)
+                    {
+                        mein[i] = address[i];
+                        temp_address += ((i != 0) ? "\n" : "") + "---";
+                    }
+                    else if (address[i] == -2)
+                    {
+                        mein[i] = address[i];
+                        temp_address += ((i != 0) ? "\n" : "") + "-->";
+                    }
+                    else
+                    {
+                        mein[i] = address[i];
+                        temp_address += ((i != 0) ? "\n" : "") + address[i].ToString(state ? "X3" : "D4");
+                    }
+                }
+
+                Dispatcher.Invoke(new System.Action(() => edit.Text = temp_address));
+
+                return;
+            }
+
+            //------------------------------------------------------------------------->
+
+            int start_index = -1;
+
+            for (int i = 0; i < size; i++)
+            {
+                if (address[i] != mein[i] )
+                {
+                    start_index = i;
+                    break;
+                }
+            }
+
+            TextRange edit2 = null;
+
+            if (start_index == -1)
+            {
+                //there is no need to refresh
+
+                if (size < this.Document.Blocks.Count)
+                {
+                    Dispatcher.Invoke(new System.Action(() => edit2 = new TextRange(this.Document.Blocks.ElementAt(size).ElementStart , this.Document.ContentEnd)));
+                    Dispatcher.Invoke(new System.Action(() => edit2.Text = ""));
+                }
+
+                return;
+            }
+     
+            if (start_index == 0)
+            {
+                Dispatcher.Invoke(new System.Action(() => edit2 = new TextRange(this.Document.ContentStart , this.Document.ContentEnd)));
+            }
+            else
+            {
+                Dispatcher.Invoke(new System.Action(() => edit2 = new TextRange(this.Document.Blocks.ElementAt(start_index - 1).ElementEnd, this.Document.ContentEnd)));
+            }
+
+            string temp_address2 = "";
+
+            for (int i = start_index; i < size ; i++)
+            {
+                if (address[i] == -10)
+                {
+                    mein[i] = address[i];
+                    Dispatcher.Invoke(new System.Action(() => edit2.Text = temp_address2));
+                    return;
+                }
+                else if (address[i] == -1)
+                {
+                    mein[i] = address[i];
+                    temp_address2 += ((i != 0) ? "\n" : "") + "---";
+                }
+                else if (address[i] == -2)
+                {
+                    mein[i] = address[i];
+                    temp_address2 += ((i != 0) ? "\n" : "") + "-->";
+                }
+                else
+                {
+                    mein[i] = address[i];
+                    temp_address2 += ((i != 0) ? "\n" : "") + address[i].ToString(state ? "X3" : "D4");
+                }
+            }
+
+            Dispatcher.Invoke(new System.Action(() => edit2.Text = temp_address2));
+
+            return;
+        }
